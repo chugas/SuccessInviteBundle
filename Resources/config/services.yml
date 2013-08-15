@@ -1,0 +1,7 @@
+parameters:
+#    success_invite.example.class: Success\SuccessInviteBundle\Example
+
+services:
+#    success_invite.example:
+#        class: %success_invite.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

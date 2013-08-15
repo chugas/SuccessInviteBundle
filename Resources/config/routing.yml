@@ -1,0 +1,3 @@
+success_invite:
+    pattern:  /redirect/{service}
+    defaults: { _controller: SuccessInviteBundle:Invite:redirect }
