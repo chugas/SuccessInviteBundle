@@ -1,6 +1,6 @@
 <?php
 
-namespace Success\SuccessInviteBundle\Tests\Controller;
+namespace Success\InviteBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

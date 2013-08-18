@@ -1,6 +1,6 @@
 <?php
 
-namespace Success\SuccessInviteBundle\DependencyInjection;
+namespace Success\InviteBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

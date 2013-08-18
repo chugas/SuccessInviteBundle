@@ -1,6 +1,6 @@
 <?php
 
-namespace Success\SuccessInviteBundle;
+namespace Success\InviteBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

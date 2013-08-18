@@ -1,6 +1,6 @@
 <?php
 
-namespace Success\SuccessInviteBundle\Controller;
+namespace Success\InviteBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 

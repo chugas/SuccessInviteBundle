@@ -1,6 +1,6 @@
 <?php
 
-namespace Success\SuccessInviteBundle\DependencyInjection;
+namespace Success\InviteBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;

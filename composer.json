@@ -19,7 +19,7 @@
         "bitgandtter/facebook-bundle": "dev-master"
     },
     "autoload": {
-        "psr-0": { "Success\\SuccessInviteBundle": "" }
+        "psr-0": { "Success\\InviteBundle": "" }
     },
-    "target-dir": "Success/SuccessInviteBundle"
+    "target-dir": "Success/InviteBundle"
 }
