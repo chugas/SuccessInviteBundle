@@ -19,9 +19,15 @@ class Configuration implements ConfigurationInterface {
     $treeBuilder = new TreeBuilder();
     $rootNode = $treeBuilder->root('success_invite');
 
-    // Here you should define the parameters that are allowed to
-    // configure your bundle. See the documentation linked above for
-    // more information on that topic.
+    $rootNode
+        ->addDefaultsIfNotSet()
+        ->children()
+          ->scalarNode('referer_class')->isRequired()->end()            
+          ->scalarNode('referer_relation_class')->isRequired()->end()
+          ->scalarNode('field')->defaultValue('ref')->end()
+          ->scalarNode('session_key')->defaultValue('success_referer')->end()
+        ->end()
+    ;
 
     return $treeBuilder;
   }

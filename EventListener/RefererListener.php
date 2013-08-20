@@ -2,66 +2,79 @@
 
 namespace Success\InviteBundle\EventListener;
 
-/* use Julius\RefererBundle\Model\Referer;
-  use Julius\RefererBundle\Matcher\MatcherInterface; */
+use Success\InviteBundle\Matcher\MatcherInterface;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class RefererListener {
 
-  /**
-   * @var string
-   */
   protected $sessionKey;
 
-  /**
-   * @var string
-   */
-  protected $field;
-
-  /**
-   * @var array
-   */
-  protected $matchers;
+  protected $matcher;
+  
+  protected $refererInfo;
+  
+  protected $reloadCache;
 
   /**
    * Class constructor
    *
    * @param string $sessionKey
+   * @param string $matcher
    */
-  public function __construct($sessionKey) {
+  public function __construct($sessionKey, MatcherInterface $matcher) {
     $this->sessionKey = $sessionKey;
-    $this->matchers = array();
-  }
-
-  /*public function addMatcher(MatcherInterface $matcher) {
-    $this->matchers[] = $matcher;
-  }
-
-  public function getMatchers() {
-    return $this->matchers;
+    $this->matcher = $matcher;
+    $this->refererInfo = null;
+    $this->reloadCache = false;
   }
 
   public function onRequest(GetResponseEvent $event) {
     $request = $event->getRequest();
     $session = $request->getSession();
-    $referer = $session->get($this->sessionKey);
-
-    if (is_array($referer)) {
-      // Referer for this session is already calculated.
+    
+    if($session->has($this->sessionKey)){
       return true;
     }
-
-    $matches = array();
-    foreach ($this->matchers as $matcher) {
-      if ($match = $matcher->match($request)) {
-        // Store only referer id
-        $matches[] = $match->getId();
-      }
+    if($request->cookies->has($this->sessionKey)){
+      $this->refererInfo = $this->decode($request->cookies->get($this->sessionKey));
+      $session->set($this->sessionKey, $this->encode($this->refererInfo));
+      return true;
     }
-    $session->set($this->sessionKey, $matches);
-  }*/
+    
+    if(null != $referer = $this->matcher->match($request)){
+      $this->refererInfo = array(
+        'id' => $referer->getId(),
+        'ref'=> $referer->getSlug()
+      );
+      $session->set($this->sessionKey, $this->encode($this->refererInfo));
+      $this->reloadCache = true;
+    }
+  }
+
+  public function onResponse(FilterResponseEvent $event) {
+    $response = $event->getResponse();
+    
+    if ($this->reloadCache && null != $this->refererInfo) {
+      $cookieGuest = array(
+        'name'  => $this->sessionKey,
+        'value' => $this->encode($this->refererInfo),
+        'time'  => time() + 3600 * 24 * 7
+      );
+
+      $cookie = new Cookie($cookieGuest['name'], $cookieGuest['value'], $cookieGuest['time']);
+      $response->headers->setCookie($cookie);
+    }
+  }
+  
+  public function encode($value){
+    return base64_encode(json_encode($value));
+  }
+  
+  public function decode($value){
+    return json_decode(base64_decode($value));
+  }
 
 }

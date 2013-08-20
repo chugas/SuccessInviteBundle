@@ -21,8 +21,14 @@ class SuccessInviteExtension extends Extension {
     $configuration = new Configuration();
     $config = $this->processConfiguration($configuration, $configs);
 
+    $container->setParameter('success_invite.referer_class', $config['referer_class']);
+    $container->setParameter('success_invite.referer_relation_class', $config['referer_relation_class']);
+    
     $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
     $loader->load('services.yml');
+    
+    $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+    $loader->load('services.xml');
   }
 
 }

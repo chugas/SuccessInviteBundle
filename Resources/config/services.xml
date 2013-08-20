@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="success_referer.session_key">%success_invite.field%</parameter>
+        <parameter key="success_referer.field">%success_invite.session_key%</parameter>
+        <parameter key="success_referer.referer.class">%success_invite.referer_class%</parameter>
+        <parameter key="success_referer.referer.relation.class">%success_invite.referer_relation_class%</parameter>
+        <parameter key="success_referer.referer_listener.class">Success\InviteBundle\EventListener\RefererListener</parameter>
+        <parameter key="success_referer.default_matcher.class">Success\InviteBundle\Matcher\DefaultMatcher</parameter>
+        <parameter key="success_referer.referer_manager.class">Success\InviteBundle\Manager\RefererManager</parameter>
+
+        <parameter key="success_referer.referer_relation_manager.class">Success\InviteBundle\Manager\RefererRelationManager</parameter>
+    </parameters>
+
+    <services>
+        <!-- Referer listener -->
+        <service id="success_referer.referer_listener" class="%success_referer.referer_listener.class%">
+            <argument>%success_referer.session_key%</argument>
+            <argument type="service" id="success_referer.default_matcher" />
+            <tag name="kernel.event_listener" event="kernel.request" method="onRequest" />
+            <tag name="kernel.event_listener" event="kernel.response" method="onResponse" />
+        </service>
+        
+        <!-- Default matcher -->
+        <service id="success_referer.default_matcher" class="%success_referer.default_matcher.class%">
+            <argument type="service" id="success_referer.referer_manager" />
+            <argument>%success_referer.field%</argument>
+            <tag name="success_referer.matcher" />
+        </service>
+        
+        <!-- Referer manager -->
+        <service id="success_referer.referer_manager" class="%success_referer.referer_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument>%success_referer.referer.class%</argument><!-- Usuario -->
+            <argument>%success_referer.session_key%</argument>
+            <call method="setRequest">
+                <argument type="service" id="request" on-invalid="null" strict="false" />
+            </call>
+        </service>
+
+        <!-- RefererRelation manager -->
+        <service id="success_referer.referer_relation_manager" class="%success_referer.referer_relation_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument>%success_referer.referer.relation.class%</argument>
+            <argument type="service" id="event_dispatcher" />
+        </service>
+              
+    </services>
+</container>

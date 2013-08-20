@@ -1,0 +1,6 @@
+<form action="{{ path('success_invite_list') }}" method="POST">
+  {% for contact in contacts %}
+    <input type="checkbox" value="{{ contact }}" />
+    {{ contact }}
+  {% endfor %}
+</form>
