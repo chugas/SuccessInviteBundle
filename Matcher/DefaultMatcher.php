@@ -35,11 +35,12 @@ class DefaultMatcher implements MatcherInterface {
    * @return RefererInterface
    */
   public function match(Request $request) {
-    if ($request->request->has($this->field)) {
-      $slug = base64_decode($request->get($this->field));
+    if ($request->query->has($this->field, false)) {
+      //$slug = base64_decode($request->query->get($this->field));
+      $slug = $request->query->get($this->field);
       if ($slug) {
         $repo = $this->manager->getRepository();
-        return $repo->findOneBySlug($slug);
+        return $repo->findOneByUsername($slug);
       }
     }
     return null;

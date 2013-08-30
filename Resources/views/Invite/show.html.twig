@@ -1,1 +1,18 @@
-Hello {{ name }}!
+{% for name, flashes in app.session.flashbag.all if name in ['success', 'error', 'fos_user_success'] %}
+  {% for flash in flashes %}
+    <div class="alert alert-{{ name == 'fos_user_success' ? 'success' : name }} fade in">
+      {{ flash|trans }}
+    </div>
+  {% endfor %}
+{% endfor %}
+
+<h1>FORMULARIO DE INVITACION</h1>
+
+<form action="{{ path('success_invite_form') }}" method="POST">
+  {{ form_rest(form) }}
+  <input type="submit" value="Enviar" />
+</form>
+
+<hr />
+<a href="{{ facebook_login_url('http://localhost.agrotemario.com/app_dev.php/gcontacts') }}">INVITE FACEBOOK</a>
+{{ google_login_button() }}

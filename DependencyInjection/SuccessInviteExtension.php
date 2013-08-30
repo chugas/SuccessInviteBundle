@@ -23,6 +23,8 @@ class SuccessInviteExtension extends Extension {
 
     $container->setParameter('success_invite.referer_class', $config['referer_class']);
     $container->setParameter('success_invite.referer_relation_class', $config['referer_relation_class']);
+    $container->setParameter('success_invite.field', $config['field']);
+    $container->setParameter('success_invite.session_key', $config['session_key']);
     
     $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
     $loader->load('services.yml');

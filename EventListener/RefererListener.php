@@ -34,20 +34,20 @@ class RefererListener {
   public function onRequest(GetResponseEvent $event) {
     $request = $event->getRequest();
     $session = $request->getSession();
-    
+
     if($session->has($this->sessionKey)){
       return true;
     }
     if($request->cookies->has($this->sessionKey)){
-      $this->refererInfo = $this->decode($request->cookies->get($this->sessionKey));
+      $this->refererInfo = $this->decode($request->cookies->get($this->sessionKey));      
       $session->set($this->sessionKey, $this->encode($this->refererInfo));
       return true;
     }
-    
+
     if(null != $referer = $this->matcher->match($request)){
       $this->refererInfo = array(
         'id' => $referer->getId(),
-        'ref'=> $referer->getSlug()
+        'ref'=> $referer->getUsername()
       );
       $session->set($this->sessionKey, $this->encode($this->refererInfo));
       $this->reloadCache = true;

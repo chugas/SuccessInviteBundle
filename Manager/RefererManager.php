@@ -50,7 +50,7 @@ class RefererManager {
     }
 
     if ($refererInfo != null) {
-      $referer = $this->getRepository()->findOneById($refererInfo['id']);
+      $referer = $this->getRepository()->findOneById($refererInfo->id);
       if (!is_null($referer)) {
         return $referer;
       }
