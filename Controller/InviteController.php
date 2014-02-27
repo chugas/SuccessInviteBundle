@@ -21,7 +21,7 @@ class InviteController extends Controller {
   public function redirectAction($service) {
     $contacts = array();
     $form = $this->createForm(new InviteType());
-    
+
     try {
       switch ($service){
         case "facebook":
