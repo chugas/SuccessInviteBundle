@@ -133,8 +133,8 @@ class InviteController extends Controller {
   protected function sendInvitations($contacts) {
     
     $message = \Swift_Message::newInstance()
-        ->setSubject('Agrotemario')
-        ->setFrom('soporte@agrotemario.com')
+        ->setSubject($this->get('translator')->trans('invite.email.subject'))
+        ->setFrom('soporte@agrotemario.com', $this->getUser()->__toString())
         ->setContentType('text/html')            
         ->setBody($this->renderView('SuccessInviteBundle:Invite:mail.html.twig', array('userFrom' => $this->getUser())))
     ;
