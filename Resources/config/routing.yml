@@ -2,9 +2,13 @@ success_invite:
     pattern:  /invite/
     defaults: { _controller: SuccessInviteBundle:Invite:show }
 
-success_invite_redirect:
-    pattern:  /redirect/{service}/
-    defaults: { _controller: SuccessInviteBundle:Invite:redirect }
+success_invite_redirect_google:
+    pattern:  /redirect/google/
+    defaults: { _controller: SuccessInviteBundle:Invite:google }
+
+success_invite_redirect_facebook:
+    pattern:  /redirect/facebook/
+    defaults: { _controller: SuccessInviteBundle:Invite:facebook }
 
 success_invite_list:
     pattern:  /process-list/

@@ -18,33 +18,42 @@ class InviteController extends Controller {
     return $this->render('SuccessInviteBundle:Invite:show.html.twig', array('form' => $form->createView()));
   }  
   
-  public function redirectAction($service) {
-    $contacts = array();
+  public function googleAction() {
     $form = $this->createForm(new InviteType());
 
     try {
-      switch ($service){
-        case "facebook":
-            // FACEBOOK
-            $facebook = $this->get('bit_facebook.api');
-            $info = $facebook->getFriends($facebook->getUser());
-            foreach($info as $data){
-              $contacts['name'] = $data['first_name'] . ' ' . $data['last_name'];
-              $contacts['email'] = $data['email'];
-            }
-          break;
-        case "google":
-            //GOOGLE
-            $google = $this->get( 'bit_google.contact' );
-            $contacts = $google->getContacts();
-          break;
-      }
+      $googleClient = $this->get('bit_google.client');
+      $googleClient->setup();
+      $googleClient->authenticate($this->getRequest()->get("code"));
+      $googleClient->setAccessToken($googleClient->getAccessToken());
+      
+      $google = $this->get('bit_google.contacts');
+      $contacts = $google->getContacts();
+      
+      return $this->render('SuccessInviteBundle:Invite:show.html.twig', array('form' => $form->createView(), 'contacts' => $contacts));
     }catch(\Exception $e) {
       return $this->redirect($this->generateUrl('user_step_third'));
     }
 
-    return $this->render('SuccessInviteBundle:Invite:show.html.twig', array('form' => $form->createView(), 'contacts' => $contacts));
+
   }
+  
+  public function facebookAction() {
+    $form = $this->createForm(new InviteType());
+
+    try {
+      $facebook = $this->get('bit_facebook.contacts');
+      $info = $facebook->getFriends($facebook->getUser());
+      foreach($info as $data){
+        $contacts['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        $contacts['email'] = $data['email'];
+      }
+      
+      return $this->render('SuccessInviteBundle:Invite:show.html.twig', array('form' => $form->createView(), 'contacts' => $contacts));
+    }catch(\Exception $e) {
+      return $this->redirect($this->generateUrl('user_step_third'));
+    }
+  }  
   
   /**
    * Procesa la lista de envio
