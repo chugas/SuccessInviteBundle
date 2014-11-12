@@ -11,12 +11,12 @@
             "email": "chugas488@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=5.3.2",
         "symfony/symfony": ">=2.2",
-        "bitgandtter/google-bundle": "dev-master",
-        "bitgandtter/facebook-bundle": "dev-master"
+        "bitgandtter/google-bundle": "dev-master@dev",
+        "bitgandtter/facebook-bundle": "dev-master@dev"
     },
     "autoload": {
         "psr-0": { "Success\\InviteBundle": "" }
