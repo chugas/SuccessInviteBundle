@@ -15,8 +15,8 @@
     "require": {
         "php": ">=5.3.2",
         "symfony/symfony": ">=2.2",
-        "bitgandtter/google-bundle": "dev-master@dev",
-        "bitgandtter/facebook-bundle": "dev-master@dev"
+        "bitgandtter/google-bundle": "0.2",
+        "bitgandtter/facebook-bundle": "0.2.2"
     },
     "autoload": {
         "psr-0": { "Success\\InviteBundle": "" }
