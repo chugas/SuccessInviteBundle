@@ -9,7 +9,7 @@ class InviteType extends AbstractType {
 
   public function buildForm(FormBuilderInterface $builder, array $options) {
     $builder
-        ->add('emails', 'textarea')
+        ->add('emails', 'textarea', array('required' => false))
     ;
   }
 

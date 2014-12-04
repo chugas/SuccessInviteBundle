@@ -91,9 +91,11 @@ class InviteController extends Controller {
     $form->bind($request);
 
     $data = $form->getData();
-    $emails = $this->transform($data['emails']);
-
-    $response = $this->process($emails);
+    $dataEmails = $data['emails'];
+    $emails = $this->transform($dataEmails);
+    if(!is_null($dataEmails)){
+      $response = $this->process($emails);
+    }
 
     if ($request->isXmlHttpRequest()) {
 
@@ -104,18 +106,21 @@ class InviteController extends Controller {
       if(!$response['response']){
         $this->setFlash('error', 'Se han encontrado algunos errores. Recuerda que debes ingresar los emails separados por coma: ' . implode(',', $response['emails']));
       }else {
-        $this->setFlash('success', 'Se han enviado los emails correctamente.');        
+        if(!is_null($dataEmails)){
+          //$this->setFlash('success', 'Se han enviado los emails correctamente.');
+        }
       }
 
-      return $this->render('SuccessInviteBundle:Invite:show.html.twig', array('form' => $form->createView()));
+      return $this->redirect($this->generateUrl('user_step_fourth'));
+      //return $this->render('SuccessInviteBundle:Invite:show.html.twig', array('form' => $form->createView()));
 
     }
   }
   
-  protected function process($emails) {
+  protected function process($emails) {   
     $all = new All(array(new Email()));
     $errorList = $this->get('validator')->validateValue($emails, $all);
-
+    
     if (count($errorList) == 0) {
 
       $this->sendInvitations($emails);
@@ -143,7 +148,7 @@ class InviteController extends Controller {
     
     $message = \Swift_Message::newInstance()
         ->setSubject($this->get('translator')->trans('invite.email.subject'))
-        ->setFrom('soporte@agrotemario.com', $this->getUser()->__toString())
+        ->setFrom('no-reply@agrotemario.com', $this->getUser()->__toString())
         ->setContentType('text/html')            
         ->setBody($this->renderView('SuccessInviteBundle:Invite:mail.html.twig', array('userFrom' => $this->getUser())))
     ;

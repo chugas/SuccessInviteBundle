@@ -1,7 +1,55 @@
 parameters:
-#    success_invite.example.class: Success\SuccessInviteBundle\Example
+    success_referer.session_key: %success_invite.session_key%
+    success_referer.field: %success_invite.field%
+    success_referer.referer.class: %success_invite.referer_class%
+    success_referer.referer.relation.class: %success_invite.referer_relation_class%
+    success_referer.referer_listener.class: Success\InviteBundle\EventListener\RefererListener
+    success_referer.refereable_listener.class: Success\InviteBundle\EventListener\RefereableListener        
+    success_referer.default_matcher.class: Success\InviteBundle\Matcher\DefaultMatcher
+    success_referer.referer_manager.class: Success\InviteBundle\Manager\RefererManager
+    success_referer.referer_extension.class: Success\InviteBundle\Twig\RefererExtension
+    success_referer.referer_relation_manager.class: Success\InviteBundle\Manager\RefererRelationManager
 
 services:
-#    success_invite.example:
-#        class: %success_invite.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+        #<!-- Referer listener -->
+        success_referer.referer_listener:
+            class: %success_referer.referer_listener.class%
+            arguments: [%success_referer.session_key%, '@success_referer.default_matcher']
+            tags:
+                - { name: kernel.event_listener, event: kernel.request, method: onRequest }
+                - { name: kernel.event_listener, event: kernel.response, method: onResponse }
+
+        #<!-- Refereable listener -->
+        success_referer.refereable_listener:
+            class: %success_referer.refereable_listener.class%
+            arguments: ['@success_referer.referer_manager', '@success_referer.referer_relation_manager']
+            tags:
+                - { name: kernel.event_listener, event: success.refereable.post_persist, method: onRefereablePersist }
+        
+        #<!-- Default matcher -->
+        success_referer.default_matcher:
+            class: %success_referer.default_matcher.class%
+            arguments: ['@success_referer.referer_manager', %success_referer.field%]
+            tags:
+                - { name: success_referer.matcher }
+        
+        #<!-- Referer manager -->
+        success_referer.referer_manager:
+            class: %success_referer.referer_manager.class%
+            arguments: ['@doctrine.orm.entity_manager', %success_referer.referer.class%, %success_referer.session_key%]
+            calls:
+                - [setRequest, ['@?request?strict=false']]
+#            <call method="setRequest: 
+#                <argument type="service" id="request" on-invalid="null" strict="false" />
+
+        #<!-- RefererRelation manager -->
+        success_referer.referer_relation_manager:
+            class: %success_referer.referer_relation_manager.class%
+            arguments: ['@doctrine.orm.entity_manager', %success_referer.referer.relation.class%, '@event_dispatcher']
+
+        success_referer.referer_extension:
+            class: %success_referer.referer_extension.class%
+            arguments: ['@router', %success_referer.field%]
+            tags:
+                - { name: twig.extension }
+        

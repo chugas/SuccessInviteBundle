@@ -22,6 +22,10 @@ class RefererManager {
   public function setRequest(Request $request = null) {
     $this->_request = $request;
   }
+  
+  public function getRequest(){
+      return $this->_request;
+  }
 
   /**
    * Get object repository for referer class
@@ -38,13 +42,13 @@ class RefererManager {
    * @return RefererInterface object
    */
   public function getSessionReferer() {
-    $session = $this->_request->getSession();
+    $session = $this->getRequest()->getSession();
     $refererInfo = null;
 
     if ($session->has($this->sessionKey)) {
       $refererInfo = $this->decode($session->get($this->sessionKey));
-    } elseif ($this->_request->cookies->has($this->sessionKey)) {
-      $refererInfo = $this->decode($this->_request->cookies->get($this->sessionKey));
+    } elseif ($this->getRequest()->cookies->has($this->sessionKey)) {
+      $refererInfo = $this->decode($this->getRequest()->cookies->get($this->sessionKey));
     } else {
       return null;
     }
